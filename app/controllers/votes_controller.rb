@@ -1,9 +1,11 @@
 class VotesController < ApplicationController
   def create
     authorize! :vote, _movie
-
     _voter.vote(_type)
     redirect_to root_path, notice: 'Vote cast'
+    movie_user = _movie_user(_movie)
+    UserNotifier.send_notification_email(movie_user.email, current_user.name, _movie.title).deliver
+    # TODO: Add delayed delivery to notification
   end
 
   def destroy
@@ -25,6 +27,10 @@ class VotesController < ApplicationController
     when 'hate' then :hate
     else raise
     end
+  end
+
+  def _movie_user(_movie)
+    @_movie_user ||= User[_movie.attributes[:user_id]]
   end
 
   def _movie

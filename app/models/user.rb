@@ -3,6 +3,9 @@ class User < BaseModel
 
   attribute :name
 
+  # email
+  attribute :email
+  
   # Unique identifier for this user, in the form "{provider}|{provider-id}"
   attribute :uid
   index     :uid
